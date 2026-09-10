@@ -1,0 +1,18 @@
+services:
+  
+  php:
+    build: ./docker/php
+    container_name: morpion_php
+    volumes:
+      - ./app:/var/www/html
+
+  nginx:
+    image: nginx:alpine
+    container_name: morpion_nginx
+    ports:
+      - "8080:80"
+    volumes:
+      - ./app:/var/www/html
+      - ./docker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - php
