@@ -21,6 +21,22 @@
     font-weight: bold;
 }
 
+.row:first-child .case {
+    border-top: none;
+}
+
+.row:last-child .case {
+    border-bottom: none;
+}
+
+.row .case:first-child {
+    border-left: none;
+}
+
+.row .case:last-child {
+    border-right: none;
+}
+
 .case button {
     background-color: rgb(252, 252, 252);
     width: 100%;

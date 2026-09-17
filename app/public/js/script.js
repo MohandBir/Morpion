@@ -2,22 +2,19 @@ let boxes = document.querySelectorAll(".case button");
 let restart = document.getElementById('restart');
 let message = document.getElementById('message');
 
-console.log(boxes);
 let oTurn = true;
 let xTurn = false;
 let oPlayedBoxes = [];
 let xPlayedBoxes = [];
-let winnerMessage = "";
 let turnMessage = "";
 let endGame = false;
 let gameResult = [];
 let gameBeginner = "";
 
 boxes.forEach( box => {
-    // message.textContent = (endGame && gameBeginner === "x") ? "Tour de O" : "Tour de X";
     box.addEventListener( "click", () => {
 
-        if (box.innerText === "" && oTurn && !oPlayedBoxes.includes(Number(box.id)) && !endGame) {
+        if (box.innerText === "" && oTurn && !endGame) {
             box.textContent = "O";
             oTurn = false;
             xTurn = true;
@@ -25,7 +22,7 @@ boxes.forEach( box => {
             turnMessage = "Tour de X";
             if (gameBeginner === "") gameBeginner = "o";
         }
-        if (box.innerText === "" && xTurn && !xPlayedBoxes.includes(Number(box.id)) && !endGame) {
+        if (box.innerText === "" && xTurn && !endGame) {
             box.textContent = "X";
             xTurn = false;
             oTurn = true;
@@ -35,13 +32,13 @@ boxes.forEach( box => {
         }
 
         gameResult = getResult(oPlayedBoxes, xPlayedBoxes);
-        console.log(gameResult);
 
         if (gameResult.length === 0) {
             message.innerText = turnMessage;
         }
         if (gameResult.length === 1) {
             message.innerText = gameResult[0];
+            endGame = true;
         }
 
         if (gameResult.length === 2) {
@@ -49,7 +46,6 @@ boxes.forEach( box => {
             gameResult[1].forEach( boxId => {
                 boxes[boxId - 1].style.backgroundColor = "red";
             });
-            // gameBeginner = (gameBeginner === "x") ? "";
             endGame = true;
         }
 
@@ -57,29 +53,24 @@ boxes.forEach( box => {
 });
 
 restart.addEventListener("click", () => {
-    console.log(gameBeginner === "o" && endGame);
-    console.log(gameBeginner === "x" && endGame);
-    
+
     if (endGame) {
         if (gameBeginner === "o") {
-            console.log('ici o');
             oTurn = false;
             xTurn = true;
             message.textContent = "Tour de X";
             gameBeginner = "";
         }
         if (gameBeginner === "x") {
-            console.log(gameBeginner);
             xTurn = false;
             oTurn = true;
             message.textContent = "Tour de O";
             gameBeginner = "";
-            console.log(gameBeginner);
         }
     }
 
     oPlayedBoxes = []
-    xPlayedBoxes = []    
+    xPlayedBoxes = []
     gameResult = []
     endGame = false;
 
@@ -87,19 +78,19 @@ restart.addEventListener("click", () => {
         box.textContent = "";
         box.style.backgroundColor = "rgb(252, 252, 252)";
     })
-    
+
 })
 
 function getResult(oPlayedBoxes, xPlayedBoxes) {
     let combos = [[1,5,9],[1,4,7],[1,2,3],[2,5,8],[3,5,7],[3,6,9], [4,5,6], [7,8,9]];
     let result = [];
 
-    for (i = 0 ; i<combos.length ; i++){
+    for (let i = 0 ; i < combos.length ; i++) {
         let oWinBoxes = [];
         let xWinBoxes = [];
         let o = 0;
         let x = 0;
-        for (j = 0 ; j<3 ; j++ ){
+        for (let j = 0 ; j < 3 ; j++) {
             if (oPlayedBoxes.includes(combos[i][j])) {
                 o++;
                 oWinBoxes.push(combos[i][j]);
@@ -109,26 +100,21 @@ function getResult(oPlayedBoxes, xPlayedBoxes) {
                 xWinBoxes.push(combos[i][j]);
             }
         }
-        console.log(o === 3);
 
-        if (o === 3 || result.length >= 2) {
-            result.push("O a gagnè");
+        if (o === 3) {
+            result.push("O a gagné");
             result.push(oWinBoxes);
             break;
-        } 
+        }
         if (x === 3) {
-            result.push("X a gagnè");
+            result.push("X a gagné");
             result.push(xWinBoxes);
             break;
         }
-        let draw = false; 
-        setTimeout(() => {
-            if ((o !== 3) && (x !== 3) && (oPlayedBoxes.length + xPlayedBoxes.length) === 9){  
-                result.push("Partie Nulle");
-                draw = true;
-            }
-        }, 10);
-        if (draw) break;
+    }
+
+    if (result.length === 0 && (oPlayedBoxes.length + xPlayedBoxes.length) === 9) {
+        result.push("Partie Nulle");
     }
 
     return result;
