@@ -14,21 +14,16 @@ let gameBeginner = "";
 boxes.forEach( box => {
     box.addEventListener( "click", () => {
 
-        if (box.innerText === "" && oTurn && !endGame) {
-            box.textContent = "O";
-            oTurn = false;
-            xTurn = true;
-            oPlayedBoxes.push(Number(box.id));
-            turnMessage = "Tour de X";
-            if (gameBeginner === "") gameBeginner = "o";
-        }
-        if (box.innerText === "" && xTurn && !endGame) {
-            box.textContent = "X";
-            xTurn = false;
-            oTurn = true;
-            xPlayedBoxes.push(Number(box.id));
-            turnMessage = "Tour de O";
-            if (gameBeginner === "") gameBeginner = "x";
+        if (box.innerText === "" && !endGame) {
+            if (oTurn) {
+                playMark(box, "O", oPlayedBoxes, "Tour de X");
+                oTurn = false;
+                xTurn = true;
+            } else if (xTurn) {
+                playMark(box, "X", xPlayedBoxes, "Tour de O");
+                xTurn = false;
+                oTurn = true;
+            }
         }
 
         gameResult = getResult(oPlayedBoxes, xPlayedBoxes);
@@ -80,6 +75,13 @@ restart.addEventListener("click", () => {
     })
 
 })
+
+function playMark(box, mark, playedBoxes, nextTurnMessage) {
+    box.textContent = mark;
+    playedBoxes.push(Number(box.id));
+    turnMessage = nextTurnMessage;
+    if (gameBeginner === "") gameBeginner = mark.toLowerCase();
+}
 
 function getResult(oPlayedBoxes, xPlayedBoxes) {
     let combos = [[1,5,9],[1,4,7],[1,2,3],[2,5,8],[3,5,7],[3,6,9], [4,5,6], [7,8,9]];
